@@ -6,7 +6,7 @@
 <div align="center">Refine your React state management experience with XSta</div>
 <br/>
 
-![NPM Version](https://badgen.net/npm/v/xsta) ![Minizipped Size](https://badgen.net/bundlephobia/minzip/xsta) ![Downloads](https://img.shields.io/npm/dm/xsta.svg) ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=small)
+![NPM Version](https://badgen.net/npm/v/xsta) ![Minizipped Size](https://badgen.net/bundlephobia/minzip/xsta) ![Downloads](https://img.shields.io/npm/dm/xsta.svg) ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)
 
 </div>
 
@@ -15,25 +15,16 @@ It feels like magic ✨: a simple one-second adjustment is all it takes to turn 
 
 ## 🔥 Features
 
-**😊 Intuitive by Design**
-
-XSta removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
-
-**⚡️ Ultra-Lightweight**
-
-With less than 200 lines of code, XSta embodies minimalism, providing robust state management without the bloat.
-
-**💪 Optimized for Performance**
-
-Utilizes finely-tuned selectors to reduce unnecessary re-renders, ensuring your components only update when needed.
-
-**⭐️ Unbounded Flexibility**
-
-Enables you to interact with your state from anywhere within your app, even outside of React components, offering complete control over state manipulation.
-
-**🪝 Hooked on React**
-
-Fully embraces React hooks and includes Typescript typings right out of the box for an enhanced development experience with added type safety.
+- **😊 Intuitive by Design**
+  > XSta removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
+- **⚡️ Ultra-Lightweight**
+  > With less than 200 lines of code, XSta embodies minimalism, providing robust state management without the bloat.
+- **💪 Optimized for Performance**
+  > Utilizes finely-tuned selectors to reduce unnecessary re-renders, ensuring your components only update when needed.
+- **⭐️ Unbounded Flexibility**
+  > Enables you to interact with your state from anywhere within your app, even outside of React components, offering complete control over state manipulation.
+- **🪝 Hooked on React**
+  > Fully embraces React hooks and includes Typescript typings right out of the box for an enhanced development experience with added type safety.
 
 ## ⚡️ Installation
 

@@ -17,7 +17,7 @@ let states: Record<
 };
 
 /**
- * XSta takes the complexity out of state management, offering a `useState`-like interface that elevates your state to global scope effortlessly.
+ * XSta is a featherlight React state management library that globalizes your state with the simplicity of a `useState`-like hook.
  */
 export const XSta: {
   readonly get: <S = any>(key: string) => S;
@@ -101,7 +101,7 @@ type IXState<S = any> = [
 export function useXState<S = any>(
   key: string,
   initialState?: S | (() => S),
-  selector?: (state: S | undefined) => any
+  options?: { selector?: (state: S | undefined) => any }
 ): IXState<S> {
   useXProvider(key, initialState);
   const ref = useRef({ id: newId(), rebuild: undefined as any });
@@ -118,7 +118,7 @@ export function useXState<S = any>(
     () => XSta.get(key),
   ];
   const selectorRef = useMemoSelectorRef<IXState<S>, S>({
-    selector,
+    selector: options?.selector,
     getCurrent,
     getDeps: () => XSta.get(key),
     onChange: () => {
@@ -171,13 +171,20 @@ function useMemoSelectorRef<S = any, D = S>(props: {
   return ref;
 }
 
+export function useXConsumer<S = any>(
+  xkey: string,
+  selector?: (state: S | undefined) => any
+) {
+  return useXState(xkey, undefined, { selector });
+}
+
 export const XConsumer = (props: {
   xkey: string;
   selector?: (state: any) => any;
   children: ReactNode | ((state: any) => any);
 }) => {
   const { xkey, selector, children } = props;
-  const [state] = useXState(xkey, undefined, selector);
+  const [state] = useXConsumer(xkey, selector);
   const memoChildrenRef = useMemoSelectorRef({
     selector,
     getCurrent: () => {

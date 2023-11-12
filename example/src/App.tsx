@@ -7,28 +7,28 @@ import { XConsumer, XSta, useXState } from "xsta";
 import { toast } from "react-toastify";
 
 function App() {
-  const [states, setStates] = useXState("my-states", {
+  const [state, setState] = useXState("myState", {
     count: 0,
     text: "❤️",
   });
 
   const onClick = () => {
-    setStates({
-      ...states,
-      count: states.count + 1,
+    setState({
+      ...state,
+      count: state.count + 1,
       text: ["❤️", "😚"][Math.round(Math.random())],
     });
   };
 
-  toast("✅ parent: " + JSON.stringify(states, undefined, 4));
+  toast("✅ parent: " + JSON.stringify(state, undefined, 4));
 
   return (
     <>
-      <XConsumer xkey="my-states" selector={(s) => s.text}>
+      <XConsumer xkey="myState" selector={(s) => s.text}>
         <Child />
       </XConsumer>
       <div className="card">
-        <button onClick={onClick}>count is {states.count}</button>
+        <button onClick={onClick}>count is {state.count}</button>
         <p>Click the button to view the component building details.</p>
       </div>
     </>
@@ -36,8 +36,8 @@ function App() {
 }
 
 function Child() {
-  const states = XSta.get("my-states");
-  toast("🔥 child: " + JSON.stringify(states, undefined, 4));
+  const state = XSta.get("myState");
+  toast("🔥 child: " + JSON.stringify(state, undefined, 4));
   return (
     <>
       <div>
@@ -48,7 +48,7 @@ function Child() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite {states.text} React</h1>
+      <h1>Vite {state.text} React</h1>
     </>
   );
 }

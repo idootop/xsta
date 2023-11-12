@@ -1,0 +1,13 @@
+{
+  "files": ["index.tsx"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "jsx": "react-jsx",
+    "target": "esnext",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "xsta",
+  "version": "1.0.0",
+  "description": "Refine your React state management experience with XSta: Turn any local state global in just a second.",
+  "homepage": "https://github.com/idootop/xsta",
+  "bugs": {
+    "url": "https://github.com/idootop/xsta/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idootop/xsta.git"
+  },
+  "author": {
+    "name": "Del Wang",
+    "email": "hello@xbox.work",
+    "url": "https://github.com/idootop"
+  },
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "hook",
+    "state",
+    "store",
+    "manager",
+    "management"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module esnext"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.js"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "external-shallow-equal": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.33",
+    "react": "^18.2.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "@types/react": ">=16.8",
+    "react": ">=16.8"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  }
+}

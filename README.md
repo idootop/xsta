@@ -11,21 +11,29 @@
 </div>
 
 XSta is a featherlight React state management library that globalizes your state with the simplicity of a `useState`-like hook.
-
 It feels like magic ✨: a simple one-second adjustment is all it takes to turn your local state into global state, seamlessly and efficiently.
 
 ## 🔥 Features
 
-- **😊 Intuitive by Design**
-  > XSta removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
-- **⚡️ Ultra-Lightweight**
-  > With less than 200 lines of code, XSta embodies minimalism, providing robust state management without the bloat.
-- **💪 Optimized for Performance**
-  > Utilizes finely-tuned selectors to reduce unnecessary re-renders, ensuring your components only update when needed.
-- **⭐️ Unbounded Flexibility**
-  > Enables you to interact with your state from anywhere within your app, even outside of React components, offering complete control over state manipulation.
-- **🪝 Hooked on React**
-  > Fully embraces React hooks and includes Typescript typings right out of the box for an enhanced development experience with added type safety.
+**😊 Intuitive by Design**
+
+XSta removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
+
+**⚡️ Ultra-Lightweight**
+
+With less than 200 lines of code, XSta embodies minimalism, providing robust state management without the bloat.
+
+**💪 Optimized for Performance**
+
+Utilizes finely-tuned selectors to reduce unnecessary re-renders, ensuring your components only update when needed.
+
+**⭐️ Unbounded Flexibility**
+
+Enables you to interact with your state from anywhere within your app, even outside of React components, offering complete control over state manipulation.
+
+**🪝 Hooked on React**
+
+Fully embraces React hooks and includes Typescript typings right out of the box for an enhanced development experience with added type safety.
 
 ## ⚡️ Installation
 
@@ -83,7 +91,7 @@ export default function Counter() {
 }
 ```
 
-### useXConsumer & selector
+### useXConsumer & Selector
 
 If your state is a complex object and you wish to refresh the UI only when certain fields change, you can use a `selector` or `useXConsumer` to specify the values of interest.
 

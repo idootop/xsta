@@ -10,15 +10,15 @@
 
 </div>
 
-XSta is a featherlight React state management library that globalizes your state with the simplicity of a `useState`-like hook.
+`XSta` is a featherlight React state management library that globalizes your state with the simplicity of a `useState`-like hook.
 It feels like magic ✨: a simple one-second adjustment is all it takes to turn your local state into global state, seamlessly and efficiently.
 
-## 🔥 Features
+## ✨ Features
 
 - **😊 Intuitive by Design**
-  > XSta removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
+  > `XSta` removes the complexity from state management by offering a `useState`-like interface that effortlessly elevates your state to a global scope.
 - **⚡️ Ultra-Lightweight**
-  > With less than 200 lines of code, XSta embodies minimalism, providing robust state management without the bloat.
+  > With less than 200 lines of code, `XSta` embodies minimalism, providing robust state management without the bloat.
 - **💪 Optimized for Performance**
   > Utilizes finely-tuned selectors to reduce unnecessary re-renders, ensuring your components only update when needed.
 - **⭐️ Unbounded Flexibility**
@@ -29,14 +29,21 @@ It feels like magic ✨: a simple one-second adjustment is all it takes to turn 
 ## ⚡️ Installation
 
 ```bash
-npm i xsta
+npm install xsta
+
+# or
+yarn add xsta
+
+# or
+pnpm install xsta
 ```
 
-## 💡 Usage
-
-### usState 👉 useXState
+## 🔥 Usage
 
 Simply replace `useState` with `useXState` and assign a unique `key` to your state. Just like that, it becomes global.
+
+<details open>
+<summary>👉 Example</summary>
 
 ```typescript
 import { useXState } from "xsta";
@@ -52,9 +59,14 @@ export default function Counter() {
 }
 ```
 
+</details>
+
 ### XSta⚡️
 
-Accessing the global state outside of components, or from any location within your app, is straightforward with XSta.
+Accessing the global state outside of components, or from any location within your app, is straightforward with `XSta`.
+
+<details open>
+<summary>👉 Example</summary>
 
 ```typescript
 import { useXState, XSta } from "xsta";
@@ -82,9 +94,14 @@ export default function Counter() {
 }
 ```
 
+</details>
+
 ### useXConsumer & Selector
 
 If your state is a complex object and you wish to refresh the UI only when certain fields change, you can use a `selector` or `useXConsumer` to specify the values of interest.
+
+<details>
+<summary>👉 Example</summary>
 
 ```typescript
 import { useXState, useXConsumer } from "xsta";
@@ -125,9 +142,14 @@ function Counter() {
 }
 ```
 
+</details>
+
 ### XConsumer
 
-For complex pages, wrap computationally expensive components with XConsumer. This will cache the previous build of the component when a parent or ancestor triggers a rebuild. The subtree will only reconstruct when the selected state changes.
+For complex pages, wrap computationally expensive components with `XConsumer`. This will cache the previous build of the component when a parent or ancestor triggers a rebuild. The subtree will only reconstruct when the selected state changes.
+
+<details>
+<summary>👉 Example</summary>
 
 ```typescript
 import { useXState, XConsumer, XSta } from "xsta";
@@ -166,9 +188,14 @@ function WatchText() {
 }
 ```
 
+</details>
+
 ## Others
 
-The features described above are the most commonly used in XSta, but there are more minor features available for you to utilize as needed.
+The features described above are the most commonly used in `XSta`, but there are more minor features available for you to utilize as needed.
+
+<details>
+<summary>👉 Example</summary>
 
 ```typescript
 import { useXState, useXProvider, XSta, XConsumer } from "xsta";
@@ -209,3 +236,6 @@ function WatchText({ state }) {
   return <h1>Current text: {state.text}</h1>;
 }
 ```
+
+</details>
+

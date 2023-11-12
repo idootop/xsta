@@ -49,6 +49,7 @@ Simply replace `useState` with `useXState` and assign a unique `key` to your sta
 import { useXState } from "xsta";
 
 export default function Counter() {
+  // replace useState with useXState and assign a key
   const [count, setCount] = useXState("count", 0);
 
   function handleClick() {

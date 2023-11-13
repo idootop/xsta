@@ -72,23 +72,18 @@ Accessing the global state outside of components, or from any location within yo
 ```typescript
 import { useXState, XSta } from "xsta";
 
-function visitState() {
+function externalFunction() {
   // Access the state
   const count = XSta.get("count");
-  alert("count is " + count);
-
-  setTimeout(() => {
-    // Update the state; components using useXState<count> will automatically refresh
-    XSta.get("count", 0);
-  }, 1000);
+  // Update the state; components using useXState<count> will automatically refresh
+  XSta.set("count", count + 1);
 }
 
 export default function Counter() {
   const [count, setCount] = useXState("count", 0);
 
   function handleClick() {
-    setCount(count + 1);
-    visitState();
+    externalFunction();
   }
 
   return <button onClick={handleClick}>You pressed me {count} times</button>;
@@ -239,4 +234,3 @@ function WatchText({ state }) {
 ```
 
 </details>
-

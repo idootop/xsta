@@ -6,7 +6,7 @@
 <div align="center">Refine your React state management experience with XSta</div>
 <br/>
 
-![NPM Version](https://badgen.net/npm/v/xsta) ![Minizipped Size](https://badgen.net/bundlephobia/minzip/xsta) ![Downloads](https://img.shields.io/npm/dm/xsta.svg) ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)
+![NPM Version](https://badgen.net/npm/v/xsta) ![Minizipped Size](https://img.shields.io/bundlephobia/minzip/xsta) ![Downloads](https://img.shields.io/npm/dm/xsta.svg) ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)
 
 </div>
 

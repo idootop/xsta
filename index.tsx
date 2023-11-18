@@ -19,29 +19,33 @@ let states: Record<
 /**
  * XSta is a featherlight React state management library that globalizes your state with the simplicity of a `useState`-like hook.
  */
-export const XSta: {
-  readonly get: <S = any>(key: string) => S;
-  readonly set: <S = any>(key: string, state: S) => void;
-  readonly remove: (key: string) => void;
-  readonly clear: () => void;
-} = {
-  get(key) {
+export const XSta = {
+  get<S = any>(key: string): S {
     return states[key]?.state;
   },
-  set(key, state) {
+  set<S = any>(key: string, nextState: S | ((prevState: S) => S | void)) {
+    let needRefresh = false;
+    if (typeof nextState === "function") {
+      const prevState = XSta.get(key);
+      nextState = (nextState as CallableFunction)(prevState);
+      if (nextState === undefined) {
+        needRefresh = true;
+        nextState = prevState;
+      }
+    }
     if (states[key]) {
-      if (!shallowEqual(states[key].state, state)) {
-        states[key].state = state;
+      if (needRefresh || !shallowEqual(states[key].state, nextState)) {
+        states[key].state = nextState;
         Object.values(states[key].rebuilds).forEach((rebuild) => rebuild());
       }
     } else {
       states[key] = {
-        state: state,
+        state: nextState,
         rebuilds: {},
       };
     }
   },
-  remove(key) {
+  remove(key: string) {
     delete states[key];
   },
   clear() {
@@ -94,7 +98,7 @@ function removeRebuildCallback(key: string, id: string) {
 
 type IXState<S = any> = [
   S, // state
-  (value: S | ((prevState: S) => S)) => void, // setState
+  (value: S | ((prevState: S) => S | void)) => void, // setState
   () => S // getState
 ];
 
@@ -108,13 +112,7 @@ export function useXState<S = any>(
   ref.current.rebuild = useRebuild();
   const getCurrent = (): IXState<S> => [
     XSta.get(key),
-    (newState) => {
-      if (typeof newState === "function") {
-        const oldState = XSta.get(key);
-        newState = (newState as CallableFunction)(oldState);
-      }
-      XSta.set(key, newState);
-    },
+    (nextState) => XSta.set(key, nextState),
     () => XSta.get(key),
   ];
   const selectorRef = useMemoSelectorRef<IXState<S>, S>({
@@ -141,7 +139,7 @@ function useMemoSelectorRef<S = any, D = S>(props: {
   getCurrent: () => S;
   getDeps?: () => D;
   selector?: (deps: D | undefined) => any;
-  onChange?: (oldState: S, newState: S) => void;
+  onChange?: (prevState: S, nextState: S) => void;
   immediately?: boolean; // diff changes immediately
 }) {
   const { getCurrent, getDeps, selector, onChange, immediately } = props;
@@ -160,9 +158,9 @@ function useMemoSelectorRef<S = any, D = S>(props: {
     const newDeps = selector?.(getDeps?.());
     ref.current.deps = newDeps;
     if (!selector || !shallowEqual(oldDeps, newDeps)) {
-      const newState = getCurrent();
-      onChange?.(ref.current.state, newState);
-      ref.current.state = newState;
+      const nextState = getCurrent();
+      onChange?.(ref.current.state, nextState);
+      ref.current.state = nextState;
     }
   };
   if (immediately) {

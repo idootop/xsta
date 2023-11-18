@@ -13,10 +13,9 @@ function App() {
   });
 
   const onClick = () => {
-    setState({
-      ...state,
-      count: state.count + 1,
-      text: ["❤️", "😚"][Math.round(Math.random())],
+    setState((prevState) => {
+      prevState.count = prevState.count + 1;
+      prevState.text = ["❤️", "😚"][Math.round(Math.random())];
     });
   };
 

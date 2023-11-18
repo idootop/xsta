@@ -49,7 +49,6 @@ Simply replace `useState` with `useXState` and assign a unique `key` to your sta
 import { useXState } from "xsta";
 
 export default function Counter() {
-  // replace useState with useXState and assign a key
   const [count, setCount] = useXState("count", 0);
 
   function handleClick() {
@@ -114,10 +113,6 @@ export default function APP() {
 function WatchText() {
   // Component will refresh only when myState.text changes
   const [state] = useXConsumer("myState", (s) => s.text);
-  // Or use a selector
-  //   const [state] = useXState("myState", undefined, {
-  //     selector: (s) => s.text,
-  //   });
   return <h1>Current text: {state.text}</h1>;
 }
 
@@ -125,10 +120,9 @@ function Counter() {
   const [state, setState] = useXState("myState", { count: 0, text: "hello" });
 
   function handleClick() {
-    setState({
-      ...state,
-      count: state.count + 1,
-      text: ["hello", "world"][Math.round(Math.random())],
+    setState((prevState) => {
+      prevState.count = prevState.count + 1;
+      prevState.text = ["❤️", "😚"][Math.round(Math.random())];
     });
   }
 

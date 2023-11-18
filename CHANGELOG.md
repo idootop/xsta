@@ -1,7 +1,11 @@
+## 1.0.2
+
+- Feat: Support for implicit state updates with component re-render notifications.
+
 ## 1.0.1
 
-- Fix: Accessing and modifying global state in an external function example
+- Fix: Improved example for accessing and updating global state from external functions.
 
 ## 1.0.0
 
-- First release
+- Initial release.

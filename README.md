@@ -26,21 +26,22 @@ It feels like magic ✨: a simple one-second adjustment is all it takes to turn 
 - **🪝 Hooked on React**
   > Fully embraces React hooks and includes Typescript typings right out of the box for an enhanced development experience with added type safety.
 
-## ⚡️ Installation
+## 📦 Installation
 
 ```bash
+# With npm
 npm install xsta
 
-# or
-yarn add xsta
-
-# or
+# With pnpm
 pnpm install xsta
+
+# With Yarn
+yarn add xsta
 ```
 
-## 🔥 Usage
+## ⚡️ Get Started
 
-Simply replace `useState` with `useXState` and assign a unique `key` to your state. Just like that, it becomes global.
+To use XSta, simply replace `useState` with `useXState` and provide a unique `key` for your state. This will instantly transform your local state into global state.
 
 <details open>
 <summary>👉 Example</summary>
@@ -55,7 +56,11 @@ export default function Counter() {
     setCount(count + 1);
   }
 
-  return <button onClick={handleClick}>You pressed me {count} times</button>;
+  return (
+    <button onClick={handleClick}>
+      <p>You pressed me {count} times</p>
+    </button>
+  );
 }
 ```
 
@@ -63,7 +68,7 @@ export default function Counter() {
 
 ### XSta⚡️
 
-Accessing the global state outside of components, or from any location within your app, is straightforward with `XSta`.
+You can access and manipulate the global state from anywhere in your application using the `XSta`.
 
 <details open>
 <summary>👉 Example</summary>
@@ -72,9 +77,10 @@ Accessing the global state outside of components, or from any location within yo
 import { useXState, XSta } from "xsta";
 
 function externalFunction() {
-  // Access the state
+  // Get the current state
   const count = XSta.get("count");
-  // Update the state; components using useXState<count> will automatically refresh
+
+  // Update the state
   XSta.set("count", count + 1);
 }
 
@@ -85,7 +91,11 @@ export default function Counter() {
     externalFunction();
   }
 
-  return <button onClick={handleClick}>You pressed me {count} times</button>;
+  return (
+    <button onClick={handleClick}>
+      <p>You pressed me {count} times</p>
+    </button>
+  );
 }
 ```
 
@@ -93,7 +103,7 @@ export default function Counter() {
 
 ### useXConsumer & Selector
 
-If your state is a complex object and you wish to refresh the UI only when certain fields change, you can use a `selector` or `useXConsumer` to specify the values of interest.
+If your state is a complex object, and you want to optimize re-renders by only updating when specific fields change, you can use a selector or `useXConsumer`.
 
 <details>
 <summary>👉 Example</summary>
@@ -111,7 +121,7 @@ export default function APP() {
 }
 
 function WatchText() {
-  // Component will refresh only when myState.text changes
+  // This component will only re-render when `myState.text` changes
   const [state] = useXConsumer("myState", (s) => s.text);
   return <h1>Current text: {state.text}</h1>;
 }
@@ -121,13 +131,16 @@ function Counter() {
 
   function handleClick() {
     setState((prevState) => {
-      prevState.count = prevState.count + 1;
+      prevState.count += 1;
       prevState.text = ["❤️", "😚"][Math.round(Math.random())];
+      return prevState;
     });
   }
 
   return (
-    <button onClick={handleClick}>You pressed me {state.count} times</button>
+    <button onClick={handleClick}>
+      <p>You pressed me {state.count} times</p>
+    </button>
   );
 }
 ```
@@ -136,7 +149,7 @@ function Counter() {
 
 ### XConsumer
 
-For complex pages, wrap computationally expensive components with `XConsumer`. This will cache the previous build of the component when a parent or ancestor triggers a rebuild. The subtree will only reconstruct when the selected state changes.
+For complex pages, you can wrap computationally expensive components with `XConsumer`. This will cache the previous build of the component when a parent or ancestor triggers a rebuild. The subtree will only reconstruct when the selected state changes.
 
 <details>
 <summary>👉 Example</summary>
@@ -146,14 +159,8 @@ import { useXState, XConsumer, XSta } from "xsta";
 
 export default function Counter() {
   const [state, setState] = useXState("myState", { count: 0, text: "hello" });
-  console.log("Counter rebuild", state);
 
-  // WatchText will only rebuild when myState.text changes
-  const watchText = (
-    <XConsumer xkey="myState" selector={(s) => s.text}>
-      <WatchText />
-    </XConsumer>
-  );
+  console.log("Counter rebuild", state);
 
   function handleClick() {
     setState({
@@ -165,8 +172,13 @@ export default function Counter() {
 
   return (
     <>
-      <button onClick={handleClick}>You pressed me {state.count} times</button>
-      {watchText}
+      <button onClick={handleClick}>
+        <p>You pressed me {state.count} times</p>
+      </button>
+      // WatchText will only rebuild when myState.text changes
+      <XConsumer xkey="myState" selector={(s) => s.text}>
+        <WatchText />
+      </XConsumer>
     </>
   );
 }
@@ -180,9 +192,45 @@ function WatchText() {
 
 </details>
 
-## Others
+### Registering a Function as State
 
-The features described above are the most commonly used in `XSta`, but there are more minor features available for you to utilize as needed.
+To set a function as a state value, you cannot directly use `useXState('key', func)` or `XSta.set('key', func)`. XSta (including React's `setState`) interprets function arguments as state updater functions of the form `(prevState) => newState`.
+
+To register a function as state, use the following pattern:
+
+<details>
+<summary>👉 Example</summary>
+
+```typescript
+const [_, setMyFunc] = useXState("key");
+setMyFunc(() => newFunc);
+```
+
+`setMyFunc(() => newFunc)` updates the state to `newFunc`. The function is wrapped in an arrow function to bypass XSta's state updater interpretation.
+
+Alternatively, you can use `XSta.set`:
+
+```typescript
+XSta.set("key", () => newFunc);
+```
+
+To set the initial state with a function:
+
+```typescript
+useXState("key", () => () => initFunc);
+```
+
+`useXState('key', () => () => initFunc)` sets the initial state to `initFunc`. The function needs to be wrapped twice because when using `useXState` to set the initial value, a function argument is interpreted as the initializer function for the state.
+
+</details>
+
+### Additional Features
+
+XSta provides a few more utilities for advanced use cases:
+
+- `useXProvider`: Initializes a global state value.
+- `XSta.remove`: Removes a global state value.
+- `XSta.clear`: Clears all global state values.
 
 <details>
 <summary>👉 Example</summary>
@@ -191,17 +239,15 @@ The features described above are the most commonly used in `XSta`, but there are
 import { useXState, useXProvider, XSta, XConsumer } from "xsta";
 
 export default function APP() {
-  // Initialize the count value
+  // Initialize the "count" state
   useXProvider("count", 0);
 
   return (
     <>
       <Counter />
+      // WatchText will only rebuild when myState.text changes
       <XConsumer xkey="myState" selector={(s) => s.text}>
-        {
-          // WatchText will only rebuild when myState.text changes
-          (state) => <WatchText state={state} />
-        }
+        {(state) => <WatchText state={state} />}
       </XConsumer>
     </>
   );
@@ -212,13 +258,17 @@ function Counter() {
 
   function handleClick() {
     setCount(count + 1);
-    // Remove count; note that this will not trigger a component refresh
+    // Remove the "count" state (won't trigger a re-render)
     XSta.remove("count");
-    // Clear all states; note that this will not trigger any component refresh
+    // Clear all global state (won't trigger any re-renders)
     XSta.clear();
   }
 
-  return <button onClick={handleClick}>You pressed me {count} times</button>;
+  return (
+    <button onClick={handleClick}>
+      <p>You pressed me {count} times</p>
+    </button>
+  );
 }
 
 function WatchText({ state }) {

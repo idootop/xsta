@@ -176,7 +176,7 @@ export default function Counter() {
         <p>You pressed me {state.count} times</p>
       </button>
       // WatchText will only rebuild when myState.text changes
-      <XConsumer xkey="myState" selector={(s) => s.text}>
+      <XConsumer provider="myState" selector={(s) => s.text}>
         <WatchText />
       </XConsumer>
     </>
@@ -246,7 +246,7 @@ export default function APP() {
     <>
       <Counter />
       // WatchText will only rebuild when myState.text changes
-      <XConsumer xkey="myState" selector={(s) => s.text}>
+      <XConsumer provider="myState" selector={(s) => s.text}>
         {(state) => <WatchText state={state} />}
       </XConsumer>
     </>

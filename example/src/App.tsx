@@ -23,7 +23,7 @@ function App() {
 
   return (
     <>
-      <XConsumer xkey="myState" selector={(s) => s.text}>
+      <XConsumer provider="myState" selector={(s) => s.text}>
         <Child />
       </XConsumer>
       <div className="card">

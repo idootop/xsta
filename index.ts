@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { useEffect, useRef, useState, ReactNode } from "react";
 import { shallowEqual } from "external-shallow-equal";
 
 type StateRef = { state?: any; rebuilds: Map<string, VoidFunction> };
 const kStates = new Map<string, StateRef>();
 
 class _XSta {
-  set<S = any>(key: string, nextState: S | ((prevState: S) => S | void)) {
+  set<S = any>(key: string, nextState: SetXStateAction<S>) {
     let needRefresh = false;
     if (typeof nextState === "function") {
       const prevState = XSta.get(key);
@@ -33,12 +32,13 @@ class _XSta {
 
 export const XSta = new _XSta();
 
-export type IXState<S = any> = [S, Dispatch<SetStateAction<S>>];
-
+export type SetXStateAction<S = any> = S | ((prevState: S) => S | void);
+export type IXState<S = any> = [S, (value: SetXStateAction<S>) => void];
+export type IXStateSelector<S = any> = (state: S) => any;
 export function useXState<S = any>(
   key: string,
   initialState?: S | (() => S),
-  options?: { selector?: (state: S | undefined) => any }
+  options?: { selector?: IXStateSelector<S> }
 ): IXState<S> {
   useXProvider(key, initialState);
   const [flag, setFlag] = useState(false);
@@ -63,21 +63,53 @@ export function useXState<S = any>(
   return selectorRef.current.state ?? getCurrent();
 }
 
-export function useXConsumer<S = any>(
-  xkey: string,
-  selector?: (state: S | undefined) => any
-) {
-  return useXState(xkey, undefined, { selector });
+export abstract class XStaManager<S = any> {
+  abstract key: string;
+  abstract initialState: S;
+  getState = () => XSta.get<S>(this.key) ?? this.initialState;
+  setState = (nextState: S) => XSta.set<S>(this.key, nextState);
+  deleteState = () => XSta.delete(this.key);
+  useState = (options?: { selector?: IXStateSelector<S> }) =>
+    useXState<S>(this.key, this.initialState, options);
+  Consumer = (props: IConsumerProps<S>) =>
+    XConsumer<S>({ provider: this.key, ...props });
 }
 
-export const XConsumer = (props: {
-  xkey: string;
-  selector?: (state: any) => any;
-  children: ReactNode | ((state: any) => ReactNode);
+export const createXStaManager = <S = any>(props: {
+  key: string;
+  initialState: S;
 }) => {
-  const { xkey, selector, children } = props;
-  const [state] = useXConsumer(xkey, selector);
-  const memoChildrenRef = useMemoSelectorRef({
+  const { key, initialState } = props;
+  return {
+    key,
+    initialState,
+    getState: () => XSta.get<S>(key) ?? initialState,
+    setState: (nextState: S) => XSta.set<S>(key, nextState),
+    deleteState: () => XSta.delete(key),
+    useState: (options?: { selector?: IXStateSelector<S> }) =>
+      useXState<S>(key, initialState, options),
+    Consumer: (props: IConsumerProps<S>) =>
+      XConsumer<S>({ provider: key, ...props }),
+  };
+};
+
+export function useXConsumer<S = any>(
+  key: string,
+  selector?: IXStateSelector<S>
+) {
+  return useXState(key, undefined, { selector });
+}
+
+type IConsumerProps<S = any> = {
+  selector?: IXStateSelector<S>;
+  children: ReactNode | ((state: S) => ReactNode);
+};
+export const XConsumer = <S = any>(
+  props: IConsumerProps<S> & { provider: string }
+) => {
+  const { provider, selector, children } = props;
+  const [state] = useXConsumer<S>(provider, selector);
+  const memoChildrenRef = useMemoSelectorRef<ReactNode, S>({
     selector,
     getCurrent: () => {
       if (typeof children === "function") {
@@ -85,7 +117,7 @@ export const XConsumer = (props: {
       }
       return children;
     },
-    getDeps: () => XSta.get(xkey),
+    getDeps: () => XSta.get(provider),
     immediately: true,
   });
   return memoChildrenRef.current.state;
@@ -125,10 +157,10 @@ export function useXProvider<S = any>(
   }, []);
 }
 
-function useMemoSelectorRef<S = any, D = S>(props: {
+function useMemoSelectorRef<S = any, D = any>(props: {
   getCurrent: () => S;
-  getDeps?: () => D;
-  selector?: (deps: D | undefined) => any;
+  getDeps: () => D;
+  selector?: (deps: D) => any;
   onChange?: (prevState: S, nextState: S) => void;
   immediately?: boolean; // diff changes immediately
 }) {
@@ -144,7 +176,7 @@ function useMemoSelectorRef<S = any, D = S>(props: {
   }
   ref.current.diffChanges = () => {
     const oldDeps = ref.current.deps;
-    const newDeps = selector?.(getDeps?.());
+    const newDeps = selector?.(getDeps());
     ref.current.deps = newDeps;
     if (!selector || !shallowEqual(oldDeps, newDeps)) {
       const nextState = getCurrent();

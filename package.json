@@ -1,6 +1,6 @@
 {
   "name": "xsta",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Refine your React state management experience with XSta: Turn any local state global in just a second.",
   "homepage": "https://github.com/idootop/xsta",
   "bugs": {

@@ -229,7 +229,7 @@ useXState("key", () => () => initFunc);
 XSta provides a few more utilities for advanced use cases:
 
 - `useXProvider`: Initializes a global state value.
-- `XSta.remove`: Removes a global state value.
+- `XSta.delete`: Deletes a global state value.
 - `XSta.clear`: Clears all global state values.
 
 <details>
@@ -258,8 +258,8 @@ function Counter() {
 
   function handleClick() {
     setCount(count + 1);
-    // Remove the "count" state (won't trigger a re-render)
-    XSta.remove("count");
+    // Delete the "count" state (won't trigger a re-render)
+    XSta.delete("count");
     // Clear all global state (won't trigger any re-renders)
     XSta.clear();
   }

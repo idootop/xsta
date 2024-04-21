@@ -105,7 +105,7 @@ If a component is computationally expensive to build, or if your state is a comp
 
 If the state selector's return value remains unchanged, `XConsumer` will reuse the previous build result of the child component, reducing unnecessary re-renders and optimizing resource consumption.
 
-<details>
+<details open>
 <summary>👉 Example</summary>
 
 ```typescript
@@ -406,4 +406,4 @@ function Increase() {
 
 </details>
 
-Note: By default, `XSta` does not automatically initialize or clean up global states. Instead, users decide when to initialize and destroy state values. Therefore, please be careful when using it to prevent issues like using an uninitialized state or memory leaks.
+Note: By default, `XSta` does not automatically initialize or clean up global states. Instead, developers decide when to initialize and destroy state values. Therefore, please be careful when using it to prevent issues like using an uninitialized state or memory leaks.

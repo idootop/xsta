@@ -2,13 +2,14 @@
   "name": "xsta",
   "version": "1.1.0",
   "type": "module",
-  "description": "Refine your React state management experience with XSta: Turn any local state global in just a second.",
+  "description": "An ultra-lightweight (<200 lines) React state management solution with zero learning curve and migration costs.",
   "license": "MIT",
   "keywords": [
+    "tiny",
     "react",
-    "hook",
     "state",
-    "store",
+    "management",
+    "zustand",
     "typescript"
   ],
   "homepage": "https://github.com/idootop/xsta",

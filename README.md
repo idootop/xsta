@@ -6,7 +6,7 @@
 <div align="center">Refine your React state management experience with XSta</div>
 <br/>
 
-![NPM Version](https://badgen.net/npm/v/xsta) ![Minizipped Size](https://img.shields.io/bundlephobia/minzip/xsta) ![Downloads](https://img.shields.io/npm/dm/xsta.svg) ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)
+[![中文文档](https://img.shields.io/badge/-中文文档-blue)](https://github.com/idootop/xsta/blob/main/README.zh-CN.md) [![NPM Version](https://badgen.net/npm/v/xsta)](https://www.npmjs.com/package/xsta) [![Minizipped Size](https://img.shields.io/bundlephobia/minzip/xsta)](https://www.npmjs.com/package/xsta) [![Downloads](https://img.shields.io/npm/dm/xsta.svg)](https://www.npmjs.com/package/xsta) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)](https://github.com/idootop/xsta)
 
 </div>
 
@@ -47,10 +47,10 @@ To use XSta, simply replace `useState` with `useXState` and provide a unique `ke
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState } from "xsta";
+import { useXState } from 'xsta';
 
 export default function Counter() {
-  const [count, setCount] = useXState("count", 0);
+  const [count, setCount] = useXState('count', 0);
 
   function handleClick() {
     setCount(count + 1);
@@ -74,18 +74,18 @@ You can access and manipulate the global state from anywhere in your application
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState, XSta } from "xsta";
+import { useXState, XSta } from 'xsta';
 
 function externalFunction() {
   // Get the current state
-  const count = XSta.get("count");
+  const count = XSta.get('count');
 
   // Update the state
-  XSta.set("count", count + 1);
+  XSta.set('count', count + 1);
 }
 
 export default function Counter() {
-  const [count, setCount] = useXState("count", 0);
+  const [count, setCount] = useXState('count', 0);
 
   function handleClick() {
     externalFunction();
@@ -109,7 +109,7 @@ If your state is a complex object, and you want to optimize re-renders by only u
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState, useXConsumer } from "xsta";
+import { useXState, useXConsumer } from 'xsta';
 
 export default function APP() {
   return (
@@ -122,17 +122,17 @@ export default function APP() {
 
 function WatchText() {
   // This component will only re-render when `myState.text` changes
-  const [state] = useXConsumer("myState", (s) => s.text);
+  const [state] = useXConsumer('myState', s => s.text);
   return <h1>Current text: {state.text}</h1>;
 }
 
 function Counter() {
-  const [state, setState] = useXState("myState", { count: 0, text: "hello" });
+  const [state, setState] = useXState('myState', { count: 0, text: 'hello' });
 
   function handleClick() {
-    setState((prevState) => {
+    setState(prevState => {
       prevState.count += 1;
-      prevState.text = ["❤️", "😚"][Math.round(Math.random())];
+      prevState.text = ['❤️', '😚'][Math.round(Math.random())];
       return prevState;
     });
   }
@@ -155,18 +155,18 @@ For complex pages, you can wrap computationally expensive components with `XCons
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState, XConsumer, XSta } from "xsta";
+import { useXState, XConsumer, XSta } from 'xsta';
 
 export default function Counter() {
-  const [state, setState] = useXState("myState", { count: 0, text: "hello" });
+  const [state, setState] = useXState('myState', { count: 0, text: 'hello' });
 
-  console.log("Counter rebuild", state);
+  console.log('Counter rebuild', state);
 
   function handleClick() {
     setState({
       ...state,
       count: state.count + 1,
-      text: ["hello", "world"][Math.round(Math.random())],
+      text: ['hello', 'world'][Math.round(Math.random())],
     });
   }
 
@@ -176,7 +176,7 @@ export default function Counter() {
         <p>You pressed me {state.count} times</p>
       </button>
       // WatchText will only rebuild when myState.text changes
-      <XConsumer provider="myState" selector={(s) => s.text}>
+      <XConsumer provider="myState" selector={s => s.text}>
         <WatchText />
       </XConsumer>
     </>
@@ -184,8 +184,8 @@ export default function Counter() {
 }
 
 function WatchText() {
-  const state = XSta.get("myState");
-  console.log("WatchText rebuild", state);
+  const state = XSta.get('myState');
+  console.log('WatchText rebuild', state);
   return <h1>Current text: {state.text}</h1>;
 }
 ```
@@ -202,7 +202,7 @@ To register a function as state, use the following pattern:
 <summary>👉 Example</summary>
 
 ```typescript
-const [_, setMyFunc] = useXState("key");
+const [_, setMyFunc] = useXState('key');
 setMyFunc(() => newFunc);
 ```
 
@@ -211,13 +211,13 @@ setMyFunc(() => newFunc);
 Alternatively, you can use `XSta.set`:
 
 ```typescript
-XSta.set("key", () => newFunc);
+XSta.set('key', () => newFunc);
 ```
 
 To set the initial state with a function:
 
 ```typescript
-useXState("key", () => () => initFunc);
+useXState('key', () => () => initFunc);
 ```
 
 `useXState('key', () => () => initFunc)` sets the initial state to `initFunc`. The function needs to be wrapped twice because when using `useXState` to set the initial value, a function argument is interpreted as the initializer function for the state.
@@ -236,30 +236,30 @@ XSta provides a few more utilities for advanced use cases:
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState, useXProvider, XSta, XConsumer } from "xsta";
+import { useXState, useXProvider, XSta, XConsumer } from 'xsta';
 
 export default function APP() {
   // Initialize the "count" state
-  useXProvider("count", 0);
+  useXProvider('count', 0);
 
   return (
     <>
       <Counter />
       // WatchText will only rebuild when myState.text changes
-      <XConsumer provider="myState" selector={(s) => s.text}>
-        {(state) => <WatchText state={state} />}
+      <XConsumer provider="myState" selector={s => s.text}>
+        {state => <WatchText state={state} />}
       </XConsumer>
     </>
   );
 }
 
 function Counter() {
-  const [count, setCount] = useXState("count");
+  const [count, setCount] = useXState('count');
 
   function handleClick() {
     setCount(count + 1);
     // Delete the "count" state (won't trigger a re-render)
-    XSta.delete("count");
+    XSta.delete('count');
     // Clear all global state (won't trigger any re-renders)
     XSta.clear();
   }
@@ -272,7 +272,7 @@ function Counter() {
 }
 
 function WatchText({ state }) {
-  console.log("WatchText rebuild", state);
+  console.log('WatchText rebuild', state);
   return <h1>Current text: {state.text}</h1>;
 }
 ```

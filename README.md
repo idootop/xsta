@@ -15,13 +15,8 @@
 ## ✨ Highlights
 
 - **🐦 Tiny yet Powerful** Less than 200 lines of code, a full-fledged React state management solution, battle-tested for production.
-- **✅ React State Management Made Right** With a familiar `useState` Hook-like interface, managing global state becomes as simple as using the built-in `useState` Hook.
-- **⚡️ Instant Global State** Just replace `useState` with `useXState`, and your local component state becomes instantly shareable across parent, child, or sibling components - it's that easy!
-- **🧩 Zero Learning and Migration Costs** Compatible with existing React state management libraries, making it easy to switch.
-- **💪 Performance Optimized** Built-in state selectors and `XConsumer` component ensure that components only re-render when their subscribed state changes, effortlessly optimizing complex page performance.
-- **⭐️ Flexible and Efficient** Beyond using the Hook, you can also access and modify specific state from anywhere outside components. When the external state changes, dependent components will automatically update.
-- **🛡️ TypeScript Support** Native support for TypeScript, ensuring type safety and auto-completion.
-- **😜 Try It Out!** With its negligible bundle size, zero learning curve, and seamless migration, `XSta` offers an ultra-smooth React state management experience.
+- **🧩 Zero Learning and Migration Costs** Just replace `useState` with `useXState`, and the local component state becomes instantly shareable across other components - it's that easy!
+- **💪 Performance Optimized** Only re-render when component's subscribed state changes, effortlessly optimizing complex page performance.
 
 ## 📦 Installation
 
@@ -38,7 +33,7 @@ yarn add xsta
 
 ## ⚡️ Get Started
 
-Simply replace `useState` with `useXState` and provide a unique `key` to turn your local component state into a globally shareable state accessible and modifiable by other parent, child, or sibling components.
+Simply replace `useState` with `useXState` and provide a unique `key` to turn your local component state into a globally shareable state.
 
 <details open>
 <summary>👉 Example</summary>
@@ -63,8 +58,6 @@ export default function Counter() {
 
 </details>
 
-### XSta⚡️
-
 You can also directly access and modify specific state from anywhere outside components using `XSta`.
 
 When the external state changes, dependent components will automatically update.
@@ -76,89 +69,17 @@ When the external state changes, dependent components will automatically update.
 import { useXState, XSta } from 'xsta';
 
 function externalFunction() {
-  // Get state
   const count = XSta.get('count');
-  // Update state (will automatically trigger Counter component re-render)
   XSta.set('count', count + 1);
 }
 
 export default function Counter() {
   const [count, setCount] = useXState('count', 0);
 
-  function handleClick() {
-    externalFunction();
-  }
-
   return (
-    <button onClick={handleClick}>
+    <button onClick={externalFunction}>
       <p>You pressed me {count} times</p>
     </button>
-  );
-}
-```
-
-</details>
-
-### XConsumer
-
-If a component is computationally expensive to build, or if your state is a complex object with multiple components depending on different properties, you can wrap the performance-critical components with `XConsumer` and use a state selector to control when the child components should re-render.
-
-If the state selector's return value remains unchanged, `XConsumer` will reuse the previous build result of the child component, reducing unnecessary re-renders and optimizing resource consumption.
-
-<details open>
-<summary>👉 Example</summary>
-
-```typescript
-import { useXState, XConsumer, XSta } from 'xsta';
-
-export default function UserProfile() {
-  const [profile, setProfile] = useXState('profile', {
-    name: 'XSta',
-    avatar: 'https://github.com/fluidicon.png',
-    age: 18,
-    bio: 'hello world!',
-  });
-
-  console.log('UserProfile rebuild', profile);
-
-  function handleClick() {
-    const age = profile.age;
-    setProfile({
-      ...profile,
-      age: [age, age + 1][Math.round(Math.random())],
-      bio: ['hello XSta!', 'hello world!'][Math.round(Math.random())],
-    });
-  }
-
-  return (
-    <>
-      {/* UserAvatar will only re-render when avatar changes */}
-      <XConsumer provider="profile" selector={s => s.avatar}>
-        <UserAvatar />
-      </XConsumer>
-      {/* UserInfo will only re-render when age or bio changes */}
-      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
-        {/* You can also directly access the current state value in the child component of XConsumer */}
-        {profile => <UserInfo age={profile.age} bio={profile.bio} />}
-      </XConsumer>
-      <button onClick={handleClick}>Refresh</button>
-    </>
-  );
-}
-
-function UserAvatar() {
-  const avatar = XSta.get('profile').avatar;
-  console.log('UserAvatar rebuild', avatar);
-  return <img src={avatar} alt="avatar" width={128} />;
-}
-
-function UserInfo({ age, bio }) {
-  console.log('UserInfo rebuild', { age, bio });
-  return (
-    <>
-      <p>Age: {age}</p>
-      <p>Bio: {bio}</p>
-    </>
   );
 }
 ```
@@ -178,7 +99,6 @@ To better manage state during development, it's common to encapsulate state-rela
 // counter.state.ts
 import { createXStaManager } from 'xsta';
 
-// Provide a unique key and initial state to create the manager
 export const CounterState = createXStaManager({
   key: 'count',
   initialState: 0,
@@ -188,12 +108,10 @@ export const CounterState = createXStaManager({
 import { CounterState } from 'counter.state';
 
 function externalFunction() {
-  // Use the created CounterState to update the state
   CounterState.setState(count => count + 1);
 }
 
 export default function Counter() {
-  // Use the created CounterState to access the state in the component
   const [count] = CounterState.useState();
 
   return (
@@ -255,6 +173,43 @@ export default function Counter() {
 
 ## ⚙️ Advanced
 
+### XConsumer
+
+If a component is computationally expensive to build, or if your state is a complex object with multiple components depending on different properties, you can wrap it with `XConsumer` and use a state selector to control when the child components should re-render.
+
+<details>
+<summary>👉 Example</summary>
+
+```typescript
+import { useXState, XConsumer } from 'xsta';
+
+export default function UserProfile() {
+  const [profile, setProfile] = useXState('profile', {
+    avatar: 'https://github.com/fluidicon.png',
+    age: 18,
+    bio: 'hello world!',
+  });
+
+  console.log('UserProfile rebuild', profile);
+
+  return (
+    <>
+      <XConsumer provider="profile" selector={s => s.avatar}>
+        <UserAvatar /> {/* UserAvatar will only re-render when avatar changes */}
+      </XConsumer>
+      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
+        {profile => {
+          // You can also directly access the current state value
+          return <UserInfo age={profile.age} bio={profile.bio} />;
+        }}
+      </XConsumer>
+    </>
+  );
+}
+```
+
+</details>
+
 ### useConsumer
 
 `useXConsumer` is an alias for `useXState` that allows for more convenient subscription to state updates.
@@ -263,80 +218,13 @@ export default function Counter() {
 <summary>👉 Example</summary>
 
 ```typescript
-import { useXState, useXConsumer } from 'xsta';
-
-export default function APP() {
-  return (
-    <>
-      <Counter />
-      <WatchText />
-    </>
-  );
-}
+import { useXConsumer } from 'xsta';
 
 function WatchText() {
   // This component will automatically re-render when myState.text changes
   const [state] = useXConsumer('myState', s => s.text);
-  console.log('WatchText rebuild', state);
   return <p>Current text: {state.text}</p>;
 }
-
-function Counter() {
-  const [state, setState] = useXState('myState', { count: 0, text: 'hello' });
-
-  console.log('Counter rebuild', state);
-
-  function handleClick() {
-    setState({
-      count: state.count + 1,
-      text: ['hello', 'world'][Math.round(Math.random())],
-    });
-  }
-
-  return (
-    <button onClick={handleClick}>
-      <p>You pressed me {state.count} times</p>
-    </button>
-  );
-}
-```
-
-</details>
-
-### Registering a Function as State
-
-When you want to set a function as a state value (e.g., registering a public callback), `XSta`, like React, treats function-typed state values as state update functions, which means: `(prevState) => newState`.
-
-Therefore, you cannot directly use `useXState('key', func)` or `XSta.set('key', func)` to set a function as a state value, or it will lead to unexpected behavior! 🚨
-
-The recommended approach is to use an object to store the callback function instead of setting the callback function directly as a state value.
-
-<details>
-<summary>👉 Example</summary>
-
-```typescript
-const callback = () => alert('hello world!');
-
-const [state] = XSta.set('key', { callback });
-
-state.callback();
-```
-
-</details>
-
-If you really need to do this, you can use the following method to set a function as a state value.
-
-<details>
-<summary>👉 Example</summary>
-
-```typescript
-const callback = () => alert('hello world!');
-
-XSta.set('key', callback); // ❌
-XSta.set('key', () => callback); // ✅
-
-useXState('key', callback); // ❌
-useXState('key', () => () => callback); // ✅ （not recommend）
 ```
 
 </details>

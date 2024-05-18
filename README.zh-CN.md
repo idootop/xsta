@@ -15,13 +15,9 @@
 ## ✨ 亮点
 
 - **🐦 麻雀虽小，五脏俱全** 核心不到 200 行代码（包含换行和注释），提供了完备的 React 状态管理解决方案，生产环境可用。
-- **✅ 让 React 状态管理变简单** 与原生 `useState` Hook 一致的状态管理接口，会用 `useState` 就可以轻松搞定全局状态管理，让复杂的事情变简单。
-- **⚡️ 天下武功，唯快不破** 只需将 `useState` 替换为 `useXState`，即可将组件内状态快速共享给其他父子或兄弟组件使用，就这么简单！
+- **✅ 让 React 状态管理变简单** 只需将 `useState` 替换为 `useXState`，即可将组件内状态快速共享给其他父子、兄弟组件使用，就这么简单！
+- **💪 专注性能优化** 内置状态选择器，确保各个组件只在其关注的状态改变时，才触发 re-render，轻松搞定复杂页面性能优化。
 - **🧩 零学习、迁移成本** 可与项目中其他已使用的状态管理库共存，轻松切换，迁移无忧。
-- **💪 专注性能优化** 内置状态选择器和 `XConsumer` 组件，确保各个组件只在其关注的状态改变时，才触发 re-render，轻松搞定复杂页面性能优化。
-- **⭐️ 灵活高效** 除了使用 Hook 的方式，你也可以在组件外的任意位置访问和修改指定状态，当外部状态变更时，依赖此状态的组件会自动更新。
-- **🛡️ 类型安全** 原生支持 Typescript 类型推断，给你更安全高效的开发体验。
-- **😜 快来体验吧！** 反正它的体积几乎可以忽略，零学习、迁移成本，给你极致丝滑的 React 状态管理新体验。
 
 ## 📦 安装
 
@@ -66,8 +62,6 @@ export default function Counter() {
 
 </details>
 
-### XSta⚡️
-
 你也可以通过 `XSta` 在组件外的任意位置直接访问和修改指定状态，当外部状态变更时，依赖此状态的组件会自动更新。
 
 <details open>
@@ -96,76 +90,6 @@ export default function Counter() {
 
 </details>
 
-### XConsumer
-
-如果某个组件的构建比较昂贵，或者你的状态是一个复杂对象，有多个组件分别依赖它的不同属性
-
-> 比如一个公共的用户 profile 对象，用户头像组件只关心 avatar，用户简介组件只关心 bio 等
-
-此时，你可以用 `XConsumer` 将需要性能优化的组件包裹起来，然后通过状态选择器（selector）控制子组件 re-render 的时机。
-
-如果状态选择器的返回值不变，`XConsumer` 会复用上一次子组件的构建结果，减少非必要的组件重建，以此来优化计算资源比较昂贵的子组件。
-
-<details open>
-<summary>👉 示例代码</summary>
-
-```typescript
-import { useXState, XConsumer, XSta } from 'xsta';
-
-export default function UserProfile() {
-  const [profile, setProfile] = useXState('profile', {
-    name: 'XSta',
-    avatar: 'https://github.com/fluidicon.png',
-    age: 18,
-    bio: 'hello world!',
-  });
-
-  console.log('UserProfile rebuild', profile);
-
-  function handleClick() {
-    const age = profile.age;
-    setProfile({
-      ...profile,
-      age: [age, age + 1][Math.round(Math.random())],
-      bio: ['hello XSta!', 'hello world!'][Math.round(Math.random())],
-    });
-  }
-
-  return (
-    <>
-      {/* 当 avatar 改变时，UserAvatar 才会 re-render */}
-      <XConsumer provider="profile" selector={s => s.avatar}>
-        <UserAvatar />
-      </XConsumer>
-      {/* 当 age 或 bio 改变时，UserInfo 才会 re-render */}
-      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
-        {/* 你也可以在 XConsumer 的子组件里，直接访问当前的状态值 */}
-        {profile => <UserInfo age={profile.age} bio={profile.bio} />}
-      </XConsumer>
-      <button onClick={handleClick}>Refresh</button>
-    </>
-  );
-}
-
-function UserAvatar() {
-  const avatar = XSta.get('profile').avatar;
-  console.log('UserAvatar rebuild', avatar);
-  return <img src={avatar} alt="avatar" width={128} />;
-}
-
-function UserInfo({ age, bio }) {
-  console.log('UserInfo rebuild', { age, bio });
-  return (
-    <>
-      <p>Age: {age}</p>
-      <p>Bio: {bio}</p>
-    </>
-  );
-}
-```
-
-</details>
-
 ## 💎 最佳实践
 
 在开发过程中，为了更好的管理状态，通常会按照模块划分，封装各个状态相关的操作。
@@ -179,7 +103,6 @@ function UserInfo({ age, bio }) {
 // counter.state.ts
 import { createXStaManager } from 'xsta';
 
-// 给定一个独一无二的 key 和初始值，即可完成创建
 export const CounterState = createXStaManager({
   key: 'count',
   initialState: 0,
@@ -189,12 +112,10 @@ export const CounterState = createXStaManager({
 import { CounterState } from 'counter.state';
 
 function externalFunction() {
-  // 使用创建好的 CounterState 更新状态
   CounterState.setState(count => count + 1);
 }
 
 export default function Counter() {
-  // 使用创建好的 CounterState 在组件内访问状态
   const [count] = CounterState.useState();
 
   return (
@@ -256,6 +177,47 @@ export default function Counter() {
 
 ## ⚙️ 高级选项
 
+### XConsumer
+
+如果某个组件的构建比较昂贵，或者你的状态是一个复杂对象，有多个组件分别依赖它的不同属性：
+
+> 比如一个公共的用户 profile 对象，用户头像组件只关心 avatar，用户简介组件只关心 bio 等
+
+此时，你可以用 `XConsumer` 将需要性能优化的组件包裹起来，然后通过状态选择器（selector）控制子组件 re-render 的时机。
+
+<details>
+<summary>👉 示例代码</summary>
+
+```typescript
+import { useXState, XConsumer } from 'xsta';
+
+export default function UserProfile() {
+  const [profile, setProfile] = useXState('profile', {
+    avatar: 'https://github.com/fluidicon.png',
+    age: 18,
+    bio: 'hello world!',
+  });
+
+  console.log('UserProfile rebuild', profile);
+
+  return (
+    <>
+      <XConsumer provider="profile" selector={s => s.avatar}>
+        <UserAvatar /> {/* 当 avatar 改变时，UserAvatar 才会 re-render */}
+      </XConsumer>
+      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
+        {profile => {
+          // 你也可以直接访问当前的状态值
+          return <UserInfo age={profile.age} bio={profile.bio} />;
+        }}
+      </XConsumer>
+    </>
+  );
+}
+```
+
+</details>
+
 ### useConsumer
 
 `useXConsumer` 是 `useXState` 的一个别名，可以用来更方便的订阅状态更新。
@@ -264,80 +226,13 @@ export default function Counter() {
 <summary>👉 示例代码</summary>
 
 ```typescript
-import { useXState, useXConsumer } from 'xsta';
-
-export default function APP() {
-  return (
-    <>
-      <Counter />
-      <WatchText />
-    </>
-  );
-}
+import { useXConsumer } from 'xsta';
 
 function WatchText() {
   // 当 myState.text 改变时，此组件会自动更新
   const [state] = useXConsumer('myState', s => s.text);
-  console.log('WatchText rebuild', state);
   return <p>Current text: {state.text}</p>;
 }
-
-function Counter() {
-  const [state, setState] = useXState('myState', { count: 0, text: 'hello' });
-
-  console.log('Counter rebuild', state);
-
-  function handleClick() {
-    setState({
-      count: state.count + 1,
-      text: ['hello', 'world'][Math.round(Math.random())],
-    });
-  }
-
-  return (
-    <button onClick={handleClick}>
-      <p>You pressed me {state.count} times</p>
-    </button>
-  );
-}
-```
-
-</details>
-
-### 使用函数作为状态值
-
-当你想要将一个函数设置为状态值时（比如注册一个公共回调），`XSta` 和 React 一样，会将函数类型的状态值视为**状态更新函数**，即： `(prevState) => newState`。
-
-因此，你不能直接使用 `useXState('key', func)` 或 `XSta.set('key', func)`来设置一个函数作为状态值，否则将会出现非预期的行为！🚨
-
-推荐的做法是，使用一个对象来存放 callback 函数，而不是直接将 callback 函数设置为状态值。
-
-<details>
-<summary>👉 示例代码</summary>
-
-```typescript
-const callback = () => alert('hello world!');
-
-const [state] = XSta.set('key', { callback });
-
-state.callback();
-```
-
-</details>
-
-如果你确实需要这么做，可以使用下面的方法来将一个函数设置成状态值。
-
-<details>
-<summary>👉 示例代码</summary>
-
-```typescript
-const callback = () => alert('hello world!');
-
-XSta.set('key', callback); // ❌
-XSta.set('key', () => callback); // ✅
-
-useXState('key', callback); // ❌
-useXState('key', () => () => callback); // ✅ （not recommend）
 ```
 
 </details>

@@ -8,18 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@types/react':
+        specifier: '>=16.8'
+        version: 18.2.66
       external-shallow-equal:
         specifier: ^1.0.0
         version: 1.0.0
-    devDependencies:
-      '@types/react':
-        specifier: ^18.2.33
-        version: 18.2.66
       react:
-        specifier: ^18.2.0
+        specifier: '>=16.8'
         version: 18.2.0
+    devDependencies:
       typescript:
-        specifier: ^5.2.2
+        specifier: ^5
         version: 5.4.2
 
 packages:

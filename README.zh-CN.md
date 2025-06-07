@@ -303,3 +303,7 @@ function Increase() {
 </details>
 
 注意：默认情况下 `XSta` 不会主动初始化或回收全局状态，而是由使用者决定状态值的初始化和销毁时机。所以在使用时请务必小心，防止状态尚未初始化，或内存泄漏等问题。
+
+## ⚖️ License
+
+[MIT](LICENSE) License © 2024-PRESENT Del Wang

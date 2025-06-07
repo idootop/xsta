@@ -295,3 +295,7 @@ function Increase() {
 </details>
 
 Note: By default, `XSta` does not automatically initialize or clean up global states. Instead, developers decide when to initialize and destroy state values. Therefore, please be careful when using it to prevent issues like using an uninitialized state or memory leaks.
+
+## ⚖️ License
+
+[MIT](LICENSE) License © 2024-PRESENT Del Wang

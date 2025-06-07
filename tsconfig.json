@@ -4,8 +4,8 @@
     "outDir": "dist",
     "strict": true,
     "declaration": true,
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2022",
+    "module": "ESNext",
     "esModuleInterop": true,
     "moduleResolution": "bundler"
   }

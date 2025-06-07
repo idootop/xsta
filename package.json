@@ -27,7 +27,7 @@
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module esnext"
+    "build": "tsc --module CommonJS --moduleResolution node && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module esnext --moduleResolution bundler"
   },
   "files": [
     "dist"

@@ -7,6 +7,5 @@ This example serves to demonstrate the utilization of XSta.
 To run this example, execute the following commands:
 
 ```bash
-yarn
-yarn preview
+pnpm install && pnpm preview
 ```

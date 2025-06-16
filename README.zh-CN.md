@@ -201,17 +201,12 @@ export default function UserProfile() {
   console.log('UserProfile rebuild', profile);
 
   return (
-    <>
-      <XConsumer provider="profile" selector={s => s.avatar}>
-        <UserAvatar /> {/* 当 avatar 改变时，UserAvatar 才会 re-render */}
-      </XConsumer>
-      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
-        {profile => {
-          // 你也可以直接访问当前的状态值
-          return <UserInfo age={profile.age} bio={profile.bio} />;
-        }}
-      </XConsumer>
-    </>
+    <XConsumer provider="profile" selector={s => [s.avatar]}>
+      {profile => {
+        console.log('当 avatar 改变时，UserAvatar 才会 re-render', profile.avatar);
+        return <UserAvatar />;
+      }}
+    </XConsumer>
   );
 }
 ```

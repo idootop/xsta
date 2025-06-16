@@ -193,17 +193,12 @@ export default function UserProfile() {
   console.log('UserProfile rebuild', profile);
 
   return (
-    <>
-      <XConsumer provider="profile" selector={s => s.avatar}>
-        <UserAvatar /> {/* UserAvatar will only re-render when avatar changes */}
-      </XConsumer>
-      <XConsumer provider="profile" selector={s => [s.age, s.bio]}>
-        {profile => {
-          // You can also directly access the current state value
-          return <UserInfo age={profile.age} bio={profile.bio} />;
-        }}
-      </XConsumer>
-    </>
+    <XConsumer provider="profile" selector={s => [s.avatar]}>
+      {profile => {
+        console.log('UserAvatar will only re-render when avatar changes', profile.avatar);
+        return <UserAvatar />;
+      }}
+    </XConsumer>
   );
 }
 ```

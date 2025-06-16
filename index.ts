@@ -9,7 +9,7 @@ class _XSta {
     let needRefresh = false;
     if (typeof nextState === 'function') {
       const prevState = XSta.get(key);
-      nextState = (nextState as CallableFunction)(prevState);
+      nextState = (nextState as Function)(prevState);
       if (nextState === undefined) {
         needRefresh = true;
         nextState = prevState;
@@ -95,14 +95,14 @@ export const useXConsumer = <S = any>(key: string, selector?: XStateSelector<S>)
   return useXState(key, undefined, { selector });
 };
 
-type IConsumerProps<S = any> = { selector?: XStateSelector<S>; children: ReactNode | ((state: S) => ReactNode) };
+type IConsumerProps<S = any> = { selector?: XStateSelector<S>; children: (state: S) => ReactNode };
 export const XConsumer = <S = any>(props: IConsumerProps<S> & { provider: string }) => {
   const { provider, selector, children } = props;
   const [state] = useXConsumer<S>(provider, selector);
   const memoChildrenRef = useMemoWithSelector<ReactNode, S>({
     selector,
     getDeps: () => XSta.get(provider),
-    getCurrent: () => (typeof children === 'function' ? children(state) : children),
+    getCurrent: () => children(state),
   });
   memoChildrenRef.current.diffChanges();
   return memoChildrenRef.current.state;

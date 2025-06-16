@@ -1,3 +1,7 @@
+## 2.2.0
+
+- **Fixed**: Disallow static ReactNode, enforce builder-only children for XConsumer.
+
 ## 2.0.0
 
 - **Added**: XStaManager - provides a unified interface for basic state management operations.

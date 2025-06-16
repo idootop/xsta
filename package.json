@@ -1,6 +1,6 @@
 {
   "name": "xsta",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "An ultra-lightweight (<200 lines) React state management solution with zero learning curve and migration costs.",
   "license": "MIT",

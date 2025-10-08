@@ -293,4 +293,4 @@ Note: By default, `XSta` does not automatically initialize or clean up global st
 
 ## ⚖️ License
 
-[MIT](LICENSE) License © 2024-PRESENT Del Wang
+MIT License © 2024-PRESENT [Del Wang](https://github.com/idootop)

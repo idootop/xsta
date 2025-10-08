@@ -1,8 +1,8 @@
-import { config } from "@del-wang/config/tsdown";
-import { defineConfig } from "tsdown";
+import { config } from '@del-wang/config/tsdown';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-	...config,
-	platform: "browser",
-	entry: ["./index.tsx"],
+  ...config,
+  platform: 'browser',
+  entry: ['./src/**/*.ts', './src/**/*.tsx'],
 });

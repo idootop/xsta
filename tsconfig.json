@@ -1,5 +1,5 @@
 {
   "extends": "@del-wang/config/typescript",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["./src", "./tests"],
   "exclude": ["node_modules"]
 }

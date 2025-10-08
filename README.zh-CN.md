@@ -301,4 +301,4 @@ function Increase() {
 
 ## ⚖️ License
 
-[MIT](LICENSE) License © 2024-PRESENT Del Wang
+MIT License © 2024-PRESENT [Del Wang](https://github.com/idootop)

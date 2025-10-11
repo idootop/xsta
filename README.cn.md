@@ -1,12 +1,11 @@
 <div align="center">
 
-![XSta Logo](https://cdn.jsdelivr.net/gh/idootop/xsta@main/assets/cover.webp)
-
-<div align="center"><h1>⚡️ XSta</h1></div>
-<div align="center">一个<strong>超轻量</strong> (< 200 行代码) 的 React 状态管理库</div>
-<br/>
+<h1 align="center">⚡️ XSta</h1>
+<p align="center">一个<strong>超轻量</strong> (< 200 行代码) 的 React 状态管理库</p>
 
 [![NPM Version](https://badgen.net/npm/v/xsta)](https://www.npmjs.com/package/xsta) [![Minizipped Size](https://img.shields.io/bundlephobia/minzip/xsta)](https://www.npmjs.com/package/xsta) [![Downloads](https://img.shields.io/npm/dm/xsta.svg)](https://www.npmjs.com/package/xsta) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fidootop%2Fxsta.svg?type=shield&issueType=license)](https://github.com/idootop/xsta)
+
+![XSta Logo](https://cdn.jsdelivr.net/gh/idootop/xsta@main/assets/cover.webp)
 
 </div>
 

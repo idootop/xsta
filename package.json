@@ -4,14 +4,14 @@
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@10.18.0",
-  "description": "An ultra-lightweight (<200 lines) React state management solution with zero learning curve and migration costs.",
+  "description": "An ultra-lightweight (< 200 lines) React state management library.",
   "keywords": [
     "tiny",
     "react",
     "state",
     "management",
-    "zustand",
-    "typescript"
+    "zenbox",
+    "zustand"
   ],
   "homepage": "https://github.com/idootop/xsta",
   "bugs": {

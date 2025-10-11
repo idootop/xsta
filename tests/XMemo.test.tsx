@@ -222,4 +222,35 @@ describe('XMemo', () => {
     // Both should re-render
     expect(memoizedChildRenderCount).toBeGreaterThan(initialMemoRenderCount);
   });
+
+  it('should support transforming computed value', () => {
+    function App() {
+      const [, setCount] = useXState('counter', 0);
+      return (
+        <div>
+          <XMemo
+            transform={(state: number) => `Count: ${state}`}
+            xKey="counter"
+          >
+            {(message) => <div data-testid="message">{message}</div>}
+          </XMemo>
+          <button
+            data-testid="btn"
+            onClick={() => setCount((prev) => prev + 1)}
+          >
+            Increment
+          </button>
+        </div>
+      );
+    }
+
+    render(<App />);
+    expect(screen.getByTestId('message').textContent).toBe('Count: 0');
+
+    act(() => {
+      screen.getByTestId('btn').click();
+    });
+
+    expect(screen.getByTestId('message').textContent).toBe('Count: 1');
+  });
 });

@@ -17,7 +17,7 @@ type PlainObject = Record<any, {}>;
 const isPlainObject = (value: any) =>
   value != null && value.__proto__ === Object.prototype;
 
-export const XSta = Object.freeze({
+export const XSta = {
   keys: () => Array.from(GLOBAL_STORE.keys()),
   has: (key: string) => GLOBAL_STORE.has(key),
   clear: () => GLOBAL_STORE.clear(),
@@ -52,7 +52,7 @@ export const XSta = Object.freeze({
     if (options?.silent) return;
     GLOBAL_STORE.get(key)!.callbacks.forEach((callback) => callback());
   },
-});
+};
 
 export function useXComputed<S = any, V = S, D = V>(
   key: string,
@@ -108,23 +108,25 @@ export function useXRoot<S = any>(key: string, state: InitialState<S> = NULL) {
   useCleanup(() => XSta.delete(key)); // destroy on unmount
 }
 
-interface WatchProps<S = any, V = S> {
-  children: (state: V) => React.ReactNode;
+interface WatchProps<S = any, V = S, D = V> {
   xKey: string;
   watch?: (state: S) => V;
+  transform?: (value: V) => D;
+  children: (state: D) => React.ReactNode;
 }
 
-export function XWatch<S = any, V = S>(props: WatchProps<S, V>) {
-  const { xKey, watch, children } = props;
-  const value = useXComputed(xKey, watch);
+export function XWatch<S = any, V = S, D = V>(props: WatchProps<S, V, D>) {
+  const { xKey, watch, transform, children } = props;
+  const value = useXComputed(xKey, watch, transform);
   return typeof children === 'function' ? children(value) : children;
 }
 
-export function XMemo<S = any, V = S>(props: WatchProps<S, V>) {
-  const { xKey, watch, children } = props;
-  return useXComputed(xKey, watch, (value) =>
-    typeof children === 'function' ? children(value) : children,
-  );
+export function XMemo<S = any, V = S, D = V>(props: WatchProps<S, V, D>) {
+  const { xKey, watch, transform, children } = props;
+  return useXComputed(xKey, watch, (data) => {
+    const value = transform ? transform(data) : (data as unknown as D);
+    return typeof children === 'function' ? children(value) : children;
+  });
 }
 
 let id = 0;
@@ -135,7 +137,7 @@ export function createXStore<S extends PlainObject>(
   const hasKey = state !== NULL;
   const key = hasKey ? (keyOrInitialState as string) : (id++).toString();
   XSta.set(key, !hasKey ? keyOrInitialState : state);
-  return Object.freeze({
+  return {
     getState: () => XSta.get<S>(key),
     setState: (newState: SetState<S>, options?: IOptions) =>
       XSta.set<S>(key, newState, options),
@@ -144,11 +146,11 @@ export function createXStore<S extends PlainObject>(
       watch: (state: S) => V,
       transform?: (value: V) => D,
     ) => useXComputed<S, V, D>(key, watch, transform),
-    XMemo: <V = S>(props: Omit<WatchProps<S, V>, 'xKey'>) => (
+    XMemo: <V = S, D = V>(props: Omit<WatchProps<S, V, D>, 'xKey'>) => (
       <XMemo {...props} xKey={key} />
     ),
-    XWatch: <V = S>(props: Omit<WatchProps<S, V>, 'xKey'>) => (
+    XWatch: <V = S, D = V>(props: Omit<WatchProps<S, V, D>, 'xKey'>) => (
       <XWatch {...props} xKey={key} />
     ),
-  });
+  };
 }

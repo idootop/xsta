@@ -1,6 +1,6 @@
 {
   "name": "xsta",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@10.18.0",

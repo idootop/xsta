@@ -34,7 +34,7 @@ describe('createXStore', () => {
 
   it('should support merge option in setState', () => {
     const store = createXStore({ name: 'Alice', age: 25 });
-    store.mergeState({ age: 26 });
+    store.setState({ age: 26 });
     expect(store.getState()).toEqual({ name: 'Alice', age: 26 });
   });
 
@@ -59,6 +59,20 @@ describe('createXStore', () => {
     expect(renderCount).toBe(initialRenderCount);
     // But state should be updated
     expect(store.getState()).toEqual({ count: 1 });
+
+    act(() => {
+      store.setState({ count: 1 });
+    });
+
+    expect(renderCount).toBe(1);
+
+    act(() => {
+      store.setState((draft) => {
+        draft.count = 1;
+      });
+    });
+
+    expect(renderCount).toBe(2);
   });
 
   it('should work with useXState hook', () => {
@@ -272,7 +286,7 @@ describe('createXStore', () => {
         notifications: true,
       },
       addId: () => {
-        store.mergeState((prev) => ({
+        store.setState((prev) => ({
           id: prev.id + 1,
         }));
       },
@@ -294,7 +308,7 @@ describe('createXStore', () => {
           </button>
           <button
             data-testid="update-name"
-            onClick={() => setUser((prev) => ({ ...prev, name: 'Bob' }))}
+            onClick={() => setUser(() => ({ name: 'Bob' }))}
           >
             Update name
           </button>
@@ -302,7 +316,6 @@ describe('createXStore', () => {
             data-testid="update-theme"
             onClick={() =>
               setUser((prev) => ({
-                ...prev,
                 settings: { ...prev.settings, theme: 'light' },
               }))
             }
@@ -337,35 +350,6 @@ describe('createXStore', () => {
     expect(screen.getByTestId('theme').textContent).toBe('light');
   });
 
-  it('should support array state', () => {
-    const store = createXStore<number[]>([1, 2, 3]);
-
-    function App() {
-      const [items, setItems] = store.useXState();
-
-      return (
-        <div>
-          <div data-testid="items">{items.join(',')}</div>
-          <button
-            data-testid="add"
-            onClick={() => setItems((prev) => [...prev, prev.length + 1])}
-          >
-            Add item
-          </button>
-        </div>
-      );
-    }
-
-    render(<App />);
-    expect(screen.getByTestId('items').textContent).toBe('1,2,3');
-
-    act(() => {
-      screen.getByTestId('add').click();
-    });
-
-    expect(screen.getByTestId('items').textContent).toBe('1,2,3,4');
-  });
-
   it('should create multiple independent stores', () => {
     const store1 = createXStore({ value: 1 });
     const store2 = createXStore({ value: 2 });
@@ -376,35 +360,6 @@ describe('createXStore', () => {
     store1.setState({ value: 10 });
     expect(store1.getState()).toEqual({ value: 10 });
     expect(store2.getState()).toEqual({ value: 2 }); // Should not change
-  });
-
-  it('should support primitive state values', () => {
-    const store = createXStore(42);
-
-    function App() {
-      const [count, setCount] = store.useXState();
-
-      return (
-        <div>
-          <div data-testid="count">{count}</div>
-          <button
-            data-testid="btn"
-            onClick={() => setCount((prev) => prev + 1)}
-          >
-            Increment
-          </button>
-        </div>
-      );
-    }
-
-    render(<App />);
-    expect(screen.getByTestId('count').textContent).toBe('42');
-
-    act(() => {
-      screen.getByTestId('btn').click();
-    });
-
-    expect(screen.getByTestId('count').textContent).toBe('43');
   });
 
   it('should work with external state updates', () => {

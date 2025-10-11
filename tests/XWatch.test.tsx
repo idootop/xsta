@@ -174,4 +174,35 @@ describe('XWatch', () => {
     expect(screen.getByTestId('x').textContent).toBe('2');
     expect(screen.getByTestId('y').textContent).toBe('3');
   });
+
+  it('should support transforming computed value', () => {
+    function App() {
+      const [, setCount] = useXState('counter', 0);
+      return (
+        <div>
+          <XWatch
+            transform={(state: number) => `Count: ${state}`}
+            xKey="counter"
+          >
+            {(message) => <div data-testid="message">{message}</div>}
+          </XWatch>
+          <button
+            data-testid="btn"
+            onClick={() => setCount((prev) => prev + 1)}
+          >
+            Increment
+          </button>
+        </div>
+      );
+    }
+
+    render(<App />);
+    expect(screen.getByTestId('message').textContent).toBe('Count: 0');
+
+    act(() => {
+      screen.getByTestId('btn').click();
+    });
+
+    expect(screen.getByTestId('message').textContent).toBe('Count: 1');
+  });
 });

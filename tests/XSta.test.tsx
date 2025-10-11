@@ -8,8 +8,8 @@ describe('XSta', () => {
   });
 
   it('should set and get state', () => {
-    XSta.set('counter', { count: 0 });
-    expect(XSta.get('counter')).toEqual({ count: 0 });
+    XSta.set('counter', 0);
+    expect(XSta.get('counter')).toEqual(0);
   });
 
   it('should check if key exists', () => {
@@ -56,8 +56,17 @@ describe('XSta', () => {
 
   it('should merge state', () => {
     XSta.set('user', { name: 'Alice', age: 25 });
-    XSta.merge('user', { age: 26 });
+    XSta.set('user', { age: 26 });
     expect(XSta.get('user')).toEqual({ name: 'Alice', age: 26 });
+  });
+
+  it('should update state the immer way', () => {
+    XSta.set('user', { name: 'Alice', age: 25 });
+    XSta.set('user', (prev: any) => {
+      prev.age++;
+      prev.name = 'Bob';
+    });
+    expect(XSta.get('user')).toEqual({ name: 'Bob', age: 26 });
   });
 
   it('should notify subscribers on state change', () => {

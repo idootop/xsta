@@ -121,14 +121,25 @@ describe('useXState', () => {
 
   it('should support merge state', () => {
     function UserProfile() {
-      const [user, _, mergeUser] = useXState('user', {
+      const [user, setUser] = useXState('user', {
         name: 'Alice',
         age: 25,
+        deep: {
+          hello: 'world',
+        },
       });
       return (
         <div>
           <div data-testid="user">{JSON.stringify(user)}</div>
-          <button data-testid="btn" onClick={() => mergeUser({ age: 26 })}>
+          <button
+            data-testid="btn"
+            onClick={() =>
+              setUser((draft) => {
+                draft.age++;
+                draft.deep.hello = 'world2';
+              })
+            }
+          >
             Update age
           </button>
         </div>
@@ -137,7 +148,7 @@ describe('useXState', () => {
 
     render(<UserProfile />);
     expect(screen.getByTestId('user').textContent).toBe(
-      '{"name":"Alice","age":25}',
+      '{"name":"Alice","age":25,"deep":{"hello":"world"}}',
     );
 
     act(() => {
@@ -145,7 +156,7 @@ describe('useXState', () => {
     });
 
     expect(screen.getByTestId('user').textContent).toBe(
-      '{"name":"Alice","age":26}',
+      '{"name":"Alice","age":26,"deep":{"hello":"world2"}}',
     );
   });
 

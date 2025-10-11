@@ -300,4 +300,48 @@ describe('useXComputed', () => {
     expect(renderCount).toBeGreaterThan(initialRenderCount);
     expect(screen.getByTestId('x').textContent).toBe('2');
   });
+
+  it('should support update state the immer way', () => {
+    let renderCounter = 0;
+    let renderTest = 0;
+    const store = createXStore({ count: 1, age: 1 });
+
+    function Counter() {
+      const count = store.useXComputed((s) => s.count);
+      renderCounter++;
+      return <div data-testid="count">{count}</div>;
+    }
+
+    function Test() {
+      const [{ age }] = store.useXState();
+      renderTest++;
+      return <div data-testid="test">{age}</div>;
+    }
+
+    render(
+      <>
+        <Counter />
+        <Test />
+      </>,
+    );
+
+    expect(renderCounter).toBe(1);
+    expect(renderTest).toBe(1);
+
+    act(() => {
+      store.setState({ count: 1 });
+    });
+
+    expect(renderCounter).toBe(1);
+    expect(renderTest).toBe(1);
+
+    act(() => {
+      store.setState((draft) => {
+        draft.count = 1;
+      });
+    });
+
+    expect(renderCounter).toBe(1);
+    expect(renderTest).toBe(2);
+  });
 });
